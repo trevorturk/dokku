@@ -5,37 +5,19 @@ source "$PLUGIN_CORE_AVAILABLE_PATH/common/functions"
 
 case "$1" in
   events)
-    if [[ -f $DOKKU_EVENTS_LOGFILE ]]; then
-      if [[ $2 == "-t" ]]; then
-        tail -F $DOKKU_EVENTS_LOGFILE
-      else
-        tail -n 100 $DOKKU_EVENTS_LOGFILE
-      fi
-    fi
+    "$PLUGIN_AVAILABLE_PATH/events/subcommands/default" "$@"
     ;;
 
   events:on)
-    echo "Enabling dokku events logger"
-    [[ -d $DOKKU_ROOT/.dokkurc ]] || mkdir -p $DOKKU_ROOT/.dokkurc
-    echo "export DOKKU_EVENTS=1" > $DOKKU_ROOT/.dokkurc/DOKKU_EVENTS
+    "$PLUGIN_AVAILABLE_PATH/events/subcommands/on" "$@"
     ;;
 
   events:off)
-    echo "Disabling dokku events logger"
-    rm -f $DOKKU_ROOT/.dokkurc/DOKKU_EVENTS
+    "$PLUGIN_AVAILABLE_PATH/events/subcommands/off" "$@"
     ;;
 
   events:list)
-    PLUGIN_DIR="$(dirname $0)/"
-    if [[ "$DOKKU_EVENTS" ]]; then
-      logged="$(find $PLUGIN_DIR -type l -printf '%f ' | sort)"
-      dokku_col_log_info2_quiet "Events currently logged"
-      for hook in $logged; do
-        dokku_col_log_msg "$hook"
-      done
-    else
-      dokku_log_warn "Events logger disabled"
-    fi
+    "$PLUGIN_AVAILABLE_PATH/events/subcommands/list" "$@"
     ;;
 
   help | events:help)

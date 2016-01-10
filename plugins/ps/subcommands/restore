@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+set -eo pipefail; [[ $DOKKU_TRACE ]] && set -x
+source "$PLUGIN_CORE_AVAILABLE_PATH/common/functions"
+
+main() {
+  declare cmd="ps:restore"
+  local argv=("$@")
+  [[ ${argv[0]} == "$cmd" ]] && shift 1
+  set -- $cmd $@
+
+  shopt -s nullglob
+  for app in $(dokku_apps); do
+    local DOKKU_APP_RESTORE=$(dokku config:get $app DOKKU_APP_RESTORE || true)
+    if [[ $DOKKU_APP_RESTORE != 0 ]]; then
+      echo "Restoring app $app ..."
+      dokku ps:start $app
+    fi
+  done
+  shopt -u nullglob
+}
+
+main "$@"

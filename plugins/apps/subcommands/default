@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+set -eo pipefail; [[ $DOKKU_TRACE ]] && set -x
+source "$PLUGIN_CORE_AVAILABLE_PATH/common/functions"
+
+main() {
+  declare cmd="apps"
+  local argv=("$@")
+  [[ ${argv[0]} == "$cmd" ]] && shift 1
+  set -- $cmd $@
+
+  dokku_log_info2_quiet "My Apps"
+  for app in $(dokku_apps); do
+    echo "$app"
+  done
+}
+
+main "$@"

@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+set -eo pipefail; [[ $DOKKU_TRACE ]] && set -x
+source "$PLUGIN_CORE_AVAILABLE_PATH/common/functions"
+
+main() {
+  declare cmd="ps:stop"
+  local argv=("$@")
+  [[ ${argv[0]} == "$cmd" ]] && shift 1
+  [[ ! -z $DOKKU_APP_NAME ]] && set -- $DOKKU_APP_NAME $@
+  set -- $cmd $@
+
+  local APP="$2"; verify_app_name "$APP"
+  local DOKKU_APP_RUNNING_CONTAINER_IDS=$(get_app_running_container_ids $APP)
+
+  ! (is_deployed $APP) && echo "App $APP has not been deployed" && exit 0
+
+  if [[ -n "$DOKKU_APP_RUNNING_CONTAINER_IDS" ]]; then
+    echo "Stopping $APP ..."
+    docker stop $DOKKU_APP_RUNNING_CONTAINER_IDS > /dev/null || true
+    plugn trigger post-stop $APP
+  else
+    echo "App $APP already stopped"
+  fi
+}
+
+main "$@"

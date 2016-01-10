@@ -1,24 +1,21 @@
 #!/usr/bin/env bash
 [[ " config config:get config:set config:unset help config:help " == *" $1 "* ]] || exit $DOKKU_NOT_IMPLEMENTED_EXIT
-set -eo pipefail; [[ $DOKKU_TRACE ]] && set -x
-source "$PLUGIN_CORE_AVAILABLE_PATH/common/functions"
-source "$PLUGIN_AVAILABLE_PATH/config/functions"
 
 case "$1" in
   config)
-    config_all "$@"
+    "$PLUGIN_AVAILABLE_PATH/config/subcommands/default" "$@"
     ;;
 
   config:get)
-    config_get "$@"
+    "$PLUGIN_AVAILABLE_PATH/config/subcommands/get" "$@"
     ;;
 
   config:set)
-    config_set "$@"
+    "$PLUGIN_AVAILABLE_PATH/config/subcommands/set" "$@"
     ;;
 
   config:unset)
-    config_unset "$@"
+    "$PLUGIN_AVAILABLE_PATH/config/subcommands/unset" "$@"
     ;;
 
   help | config:help)

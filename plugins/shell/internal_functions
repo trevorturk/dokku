@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+set -eo pipefail; [[ $DOKKU_TRACE ]] && set -x
+source "$PLUGIN_CORE_AVAILABLE_PATH/common/functions"
+
+trim() {
+  sed -e 's/^[[:space:]]*//g' -e 's/[[:space:]]*$//g'
+}

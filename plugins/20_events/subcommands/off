@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+set -eo pipefail; [[ $DOKKU_TRACE ]] && set -x
+source "$PLUGIN_CORE_AVAILABLE_PATH/common/functions"
+
+main() {
+  declare cmd="events:off"
+  local argv=("$@")
+  [[ ${argv[0]} == "$cmd" ]] && shift 1
+  set -- $cmd $@
+
+  echo "Disabling dokku events logger"
+  rm -f $DOKKU_ROOT/.dokkurc/DOKKU_EVENTS
+}
+
+main "$@"
